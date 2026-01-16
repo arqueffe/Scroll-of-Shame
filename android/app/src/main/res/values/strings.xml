@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Scroll of Shame</string>
+    <string name="accessibility_service_description">This service monitors which apps you use to help you stay productive by notifying you when you use time-wasting apps.</string>
+</resources>

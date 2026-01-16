@@ -1,6 +1,43 @@
 # Scroll-of-Shame
 
-## How to Detect Current Foreground App in Flutter (Android)
+A Flutter app that helps you stay productive by shaming you for using time-wasting apps. Monitor your app usage and get notifications when you open apps like Reddit, Instagram, TikTok, YouTube, and more!
+
+## Features
+
+- 📱 Monitor your app usage in real-time
+- 🔔 Get shame notifications when using time-wasting apps
+- 🌙 Set shame-free hours (no notifications during specified times)
+- 📋 Pre-populated list of popular time-wasting apps
+- ➕ Add custom apps to your shame list
+- 🎨 Modern, dark-themed UI
+- ⚙️ Easy enable/disable for individual apps
+
+## Installation
+
+1. Download the latest APK from the [Releases](https://github.com/arqueffe/Scroll-of-Shame/releases) page
+2. Install the APK on your Android device
+3. Grant the required permissions (Usage Access)
+4. Enable monitoring from the home screen
+
+## Building from Source
+
+```bash
+# Clone the repository
+git clone https://github.com/arqueffe/Scroll-of-Shame.git
+cd Scroll-of-Shame
+
+# Install dependencies
+flutter pub get
+
+# Build APK
+flutter build apk --release --target-platform android-arm64
+```
+
+## How It Works
+
+This app uses Android's UsageStatsManager API to monitor which apps are currently in the foreground. When you open an app on your shame list during active hours, you'll receive a notification with a custom shame message.
+
+## Technical Details - How to Detect Current Foreground App in Flutter (Android)
 
 Creating a Flutter Android app that monitors which application the user is currently using requires native Android platform integration, as Flutter doesn't provide this capability out of the box. This guide explores the most effective approaches, required permissions, implementation strategies, and available packages.
 
