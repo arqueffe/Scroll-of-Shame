@@ -13,25 +13,25 @@ class _AddAppScreenState extends State<AddAppScreen> {
   final _formKey = GlobalKey<FormState>();
   final _packageNameController = TextEditingController();
   final _appNameController = TextEditingController();
-  final _shameMessageController = TextEditingController();
+  final _intentionPromptController = TextEditingController();
 
   @override
   void dispose() {
     _packageNameController.dispose();
     _appNameController.dispose();
-    _shameMessageController.dispose();
+    _intentionPromptController.dispose();
     super.dispose();
   }
 
   Future<void> _saveApp() async {
     if (_formKey.currentState!.validate()) {
-      final app = ShameApp(
+      final app = IntendApp(
         packageName: _packageNameController.text.trim(),
         appName: _appNameController.text.trim(),
-        shameMessage: _shameMessageController.text.trim(),
+        intentionPrompt: _intentionPromptController.text.trim(),
       );
 
-      await StorageService.addShameApp(app);
+      await StorageService.addIntendApp(app);
       if (mounted) {
         Navigator.pop(context);
       }
@@ -42,7 +42,7 @@ class _AddAppScreenState extends State<AddAppScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add App to Shame'),
+        title: const Text('Add App for Intentional Use'),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -95,17 +95,17 @@ class _AddAppScreenState extends State<AddAppScreen> {
                       ),
                       const SizedBox(height: 16),
                       TextFormField(
-                        controller: _shameMessageController,
+                        controller: _intentionPromptController,
                         decoration: const InputDecoration(
-                          labelText: 'Shame Message',
-                          hintText: 'Stop wasting time!',
-                          prefixIcon: Icon(Icons.message),
+                          labelText: 'Intention Prompt',
+                          hintText: 'What do you want to accomplish?',
+                          prefixIcon: Icon(Icons.lightbulb_outline),
                           border: OutlineInputBorder(),
                         ),
                         maxLines: 3,
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
-                            return 'Please enter a shame message';
+                            return 'Please enter an intention prompt';
                           }
                           return null;
                         },
@@ -153,7 +153,7 @@ class _AddAppScreenState extends State<AddAppScreen> {
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size.fromHeight(56),
                 ),
-                child: const Text('Add to Shame List'),
+                child: const Text('Add to Intention List'),
               ),
             ],
           ),

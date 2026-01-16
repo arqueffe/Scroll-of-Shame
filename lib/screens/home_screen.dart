@@ -14,7 +14,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<ShameApp> _shameApps = [];
+  List<IntendApp> _intendApps = [];
   bool _isMonitoring = false;
   bool _hasPermission = false;
 
@@ -34,9 +34,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _loadData() async {
-    final apps = await StorageService.getShameApps();
+    final apps = await StorageService.getIntendApps();
     setState(() {
-      _shameApps = apps;
+      _intendApps = apps;
     });
   }
 
@@ -66,14 +66,14 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Future<void> _toggleAppEnabled(ShameApp app) async {
+  Future<void> _toggleAppEnabled(IntendApp app) async {
     final updatedApp = app.copyWith(isEnabled: !app.isEnabled);
-    await StorageService.updateShameApp(updatedApp);
+    await StorageService.updateIntendApp(updatedApp);
     await _loadData();
   }
 
-  Future<void> _deleteApp(ShameApp app) async {
-    await StorageService.removeShameApp(app.packageName);
+  Future<void> _deleteApp(IntendApp app) async {
+    await StorageService.removeIntendApp(app.packageName);
     await _loadData();
   }
 
@@ -83,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: CustomScrollView(
         slivers: [
           SliverAppBar.large(
-            title: const Text('Scroll of Shame'),
+            title: const Text('Intend'),
             actions: [
               IconButton(
                 icon: const Icon(Icons.settings),
@@ -164,11 +164,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Apps to Shame',
+                        'Intentional Use Apps',
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                       Text(
-                        '${_shameApps.where((app) => app.isEnabled).length}/${_shameApps.length}',
+                        '${_intendApps.where((app) => app.isEnabled).length}/${_intendApps.length}',
                         style: Theme.of(context).textTheme.titleMedium?.copyWith(
                               color: Theme.of(context).colorScheme.primary,
                             ),
@@ -179,7 +179,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          if (_shameApps.isEmpty)
+          if (_intendApps.isEmpty)
             SliverFillRemaining(
               child: Center(
                 child: Column(
@@ -192,14 +192,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'No apps in your shame list yet',
+                      'No apps in your intention list yet',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             color: Colors.grey[600],
                           ),
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Add apps to start monitoring',
+                      'Add apps to use them more intentionally',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: Colors.grey[500],
                           ),
@@ -214,14 +214,14 @@ class _HomeScreenState extends State<HomeScreen> {
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
-                    final app = _shameApps[index];
+                    final app = _intendApps[index];
                     return ShameAppCard(
                       app: app,
                       onToggle: () => _toggleAppEnabled(app),
                       onDelete: () => _deleteApp(app),
                     );
                   },
-                  childCount: _shameApps.length,
+                  childCount: _intendApps.length,
                 ),
               ),
             ),

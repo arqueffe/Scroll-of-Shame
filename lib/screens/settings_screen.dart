@@ -10,7 +10,7 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  late ShameFreeSettings _settings;
+  late FocusTimeSettings _settings;
   bool _isLoading = true;
 
   @override
@@ -20,7 +20,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _loadSettings() async {
-    final settings = await StorageService.getShameFreeSettings();
+    final settings = await StorageService.getFocusTimeSettings();
     setState(() {
       _settings = settings;
       _isLoading = false;
@@ -28,7 +28,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _saveSettings() async {
-    await StorageService.saveShameFreeSettings(_settings);
+    await StorageService.saveFocusTimeSettings(_settings);
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Settings saved')),
@@ -105,11 +105,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Shame-Free Hours',
+                              'Focus Time',
                               style: Theme.of(context).textTheme.titleMedium,
                             ),
                             Text(
-                              'No shaming during these hours',
+                              'No coaching prompts during these hours',
                               style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ],
@@ -164,7 +164,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
-                              'You won\'t receive shame notifications during these hours',
+                              'You won\'t receive coaching prompts during these hours',
                               style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ),
@@ -181,17 +181,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: ListTile(
               leading: const Icon(Icons.info),
               title: const Text('About'),
-              subtitle: const Text('Scroll of Shame v1.0.0'),
+              subtitle: const Text('Intend v2.0.0'),
               onTap: () {
                 showAboutDialog(
                   context: context,
-                  applicationName: 'Scroll of Shame',
-                  applicationVersion: '1.0.0',
-                  applicationIcon: const Icon(Icons.warning_amber, size: 48),
+                  applicationName: 'Intend',
+                  applicationVersion: '2.0.0',
+                  applicationIcon: const Icon(Icons.lightbulb_outline, size: 48),
                   children: [
                     const Text(
-                      'An app to help you stay productive by shaming you '
-                      'for using time-wasting applications.',
+                      'A context-aware coaching app that helps you use your phone '
+                      'with intention and mindfulness.',
                     ),
                   ],
                 );

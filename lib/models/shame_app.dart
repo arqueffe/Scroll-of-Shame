@@ -1,53 +1,55 @@
-class ShameApp {
+class IntendApp {
   final String packageName;
   final String appName;
-  final String shameMessage;
+  final String intentionPrompt;
   final bool isEnabled;
 
-  ShameApp({
+  IntendApp({
     required this.packageName,
     required this.appName,
-    required this.shameMessage,
+    required this.intentionPrompt,
     this.isEnabled = true,
   });
 
   Map<String, dynamic> toJson() => {
         'packageName': packageName,
         'appName': appName,
-        'shameMessage': shameMessage,
+        'intentionPrompt': intentionPrompt,
         'isEnabled': isEnabled,
       };
 
-  factory ShameApp.fromJson(Map<String, dynamic> json) => ShameApp(
+  factory IntendApp.fromJson(Map<String, dynamic> json) => IntendApp(
         packageName: json['packageName'] as String,
         appName: json['appName'] as String,
-        shameMessage: json['shameMessage'] as String,
+        intentionPrompt: json['intentionPrompt'] as String? ?? 
+                         json['shameMessage'] as String? ?? 
+                         'Are you opening this with intention?',
         isEnabled: json['isEnabled'] as bool? ?? true,
       );
 
-  ShameApp copyWith({
+  IntendApp copyWith({
     String? packageName,
     String? appName,
-    String? shameMessage,
+    String? intentionPrompt,
     bool? isEnabled,
   }) {
-    return ShameApp(
+    return IntendApp(
       packageName: packageName ?? this.packageName,
       appName: appName ?? this.appName,
-      shameMessage: shameMessage ?? this.shameMessage,
+      intentionPrompt: intentionPrompt ?? this.intentionPrompt,
       isEnabled: isEnabled ?? this.isEnabled,
     );
   }
 }
 
-class ShameFreeSettings {
+class FocusTimeSettings {
   final bool enabled;
   final int startHour;
   final int startMinute;
   final int endHour;
   final int endMinute;
 
-  ShameFreeSettings({
+  FocusTimeSettings({
     this.enabled = false,
     this.startHour = 22,
     this.startMinute = 0,
@@ -55,7 +57,7 @@ class ShameFreeSettings {
     this.endMinute = 0,
   });
 
-  bool isInShameFreeHours(DateTime now) {
+  bool isInFocusTime(DateTime now) {
     if (!enabled) return false;
 
     final currentMinutes = now.hour * 60 + now.minute;
@@ -79,8 +81,8 @@ class ShameFreeSettings {
         'endMinute': endMinute,
       };
 
-  factory ShameFreeSettings.fromJson(Map<String, dynamic> json) =>
-      ShameFreeSettings(
+  factory FocusTimeSettings.fromJson(Map<String, dynamic> json) =>
+      FocusTimeSettings(
         enabled: json['enabled'] as bool? ?? false,
         startHour: json['startHour'] as int? ?? 22,
         startMinute: json['startMinute'] as int? ?? 0,
@@ -88,14 +90,14 @@ class ShameFreeSettings {
         endMinute: json['endMinute'] as int? ?? 0,
       );
 
-  ShameFreeSettings copyWith({
+  FocusTimeSettings copyWith({
     bool? enabled,
     int? startHour,
     int? startMinute,
     int? endHour,
     int? endMinute,
   }) {
-    return ShameFreeSettings(
+    return FocusTimeSettings(
       enabled: enabled ?? this.enabled,
       startHour: startHour ?? this.startHour,
       startMinute: startMinute ?? this.startMinute,
