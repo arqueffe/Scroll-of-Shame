@@ -54,7 +54,12 @@ echo "$NEW_VERSION" > "$VERSION_FILE"
 
 # Update pubspec.yaml
 # Extract current build number from pubspec.yaml
-CURRENT_BUILD=$(grep "^version:" "$PUBSPEC_FILE" | sed 's/version: [0-9]*\.[0-9]*\.[0-9]*+//' || echo "1")
+CURRENT_BUILD=$(grep "^version:" "$PUBSPEC_FILE" | sed -E 's/^version: [0-9]+\.[0-9]+\.[0-9]+\+([0-9]+)$/\1/' || echo "1")
+
+# If extraction failed (no build number found), default to 1
+if [ -z "$CURRENT_BUILD" ] || [ "$CURRENT_BUILD" = "1" ]; then
+    CURRENT_BUILD=1
+fi
 
 # Increment build number
 NEW_BUILD=$((CURRENT_BUILD + 1))

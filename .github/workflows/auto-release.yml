@@ -28,6 +28,8 @@ jobs:
         id: version
         run: |
           chmod +x bump_version.sh
+          # Default to minor version bump for each release
+          # To change bump type, modify 'minor' to 'major' or 'patch'
           ./bump_version.sh minor
           NEW_VERSION=$(cat version.txt)
           echo "New version: ${NEW_VERSION}"
