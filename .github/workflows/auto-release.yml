@@ -14,113 +14,113 @@ jobs:
       actions: read
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-    - name: Configure git
-      run: |
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Configure git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-    - name: Bump minor version
-      id: version
-      run: |
-        chmod +x bump_version.sh
-        ./bump_version.sh minor
-        NEW_VERSION=$(cat version.txt)
-        echo "New version: ${NEW_VERSION}"
+      - name: Bump minor version
+        id: version
+        run: |
+          chmod +x bump_version.sh
+          ./bump_version.sh minor
+          NEW_VERSION=$(cat version.txt)
+          echo "New version: ${NEW_VERSION}"
 
-    - name: Set up Java
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'zulu'
-        java-version: '17'
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
 
-    - name: Set up Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: '3.24.0'
-        channel: 'stable'
-        cache: true
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+          cache: true
 
-    - name: Install dependencies
-      run: flutter pub get
+      - name: Install dependencies
+        run: flutter pub get
 
-    - name: Build Android APK (arm64-v8a only)
-      run: |
-        # Build only for arm64-v8a ABI (modern 64-bit ARM devices)
-        # To expand to other ABIs in the future, modify the --target-platform flag:
-        # - For all ABIs: Use --split-per-abi without --target-platform
-        # - For specific ABIs: Use --target-platform=android-arm64,android-arm,android-x64
-        # - For single ABI: Use --target-platform=android-arm64 (current setting)
-        flutter build apk --release --target-platform=android-arm64
-        echo "Build complete. Listing generated APKs:"
-        ls -lh build/app/outputs/flutter-apk/
+      - name: Build Android APK (arm64-v8a only)
+        run: |
+          # Build only for arm64-v8a ABI (modern 64-bit ARM devices)
+          # To expand to other ABIs in the future, modify the --target-platform flag:
+          # - For all ABIs: Use --split-per-abi without --target-platform
+          # - For specific ABIs: Use --target-platform=android-arm64,android-arm,android-x64
+          # - For single ABI: Use --target-platform=android-arm64 (current setting)
+          flutter build apk --release --target-platform=android-arm64
+          echo "Build complete. Listing generated APKs:"
+          ls -lh build/app/outputs/flutter-apk/
 
-    - name: Commit version bump
-      run: |
-        NEW_VERSION=$(cat version.txt)
-        git add version.txt pubspec.yaml
-        if git diff --cached --quiet; then
-          echo "No version changes to commit"
-        else
-          git commit -m "Bump version to ${NEW_VERSION} [skip ci]"
-          git push origin main
-        fi
+      - name: Commit version bump
+        run: |
+          NEW_VERSION=$(cat version.txt)
+          git add version.txt pubspec.yaml
+          if git diff --cached --quiet; then
+            echo "No version changes to commit"
+          else
+            git commit -m "Bump version to ${NEW_VERSION} [skip ci]"
+            git push origin main
+          fi
 
-    - name: Generate release tag
-      id: tag
-      run: |
-        VERSION=$(cat version.txt)
-        TAG="v${VERSION}"
-        echo "tag=${TAG}" >> $GITHUB_OUTPUT
-        echo "version=${VERSION}" >> $GITHUB_OUTPUT
-        echo "Generated tag: ${TAG}"
+      - name: Generate release tag
+        id: tag
+        run: |
+          VERSION=$(cat version.txt)
+          TAG="v${VERSION}"
+          echo "tag=${TAG}" >> $GITHUB_OUTPUT
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "Generated tag: ${TAG}"
 
-    - name: Get commit message
-      id: commit
-      run: |
-        COMMIT_MSG=$(git log -1 --pretty=%B)
-        echo "message<<EOF" >> $GITHUB_OUTPUT
-        echo "$COMMIT_MSG" >> $GITHUB_OUTPUT
-        echo "EOF" >> $GITHUB_OUTPUT
+      - name: Get commit message
+        id: commit
+        run: |
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          echo "message<<EOF" >> $GITHUB_OUTPUT
+          echo "$COMMIT_MSG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
-    - name: Create Release
-      uses: softprops/action-gh-release@v1
-      with:
-        tag_name: ${{ steps.tag.outputs.tag }}
-        name: Scroll of Shame ${{ steps.tag.outputs.version }}
-        draft: false
-        prerelease: false
-        files: |
-          build/app/outputs/flutter-apk/app-release.apk
-        body: |
-          ## Scroll of Shame ${{ steps.tag.outputs.version }}
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          name: Scroll of Shame ${{ steps.tag.outputs.version }}
+          draft: false
+          prerelease: false
+          files: |
+            build/app/outputs/flutter-apk/app-release.apk
+          body: |
+            ## Scroll of Shame ${{ steps.tag.outputs.version }}
 
-          **Built from commit:** ${{ github.sha }}
-          **Branch:** main
-          **Commit message:** ${{ steps.commit.outputs.message }}
+            **Built from commit:** ${{ github.sha }}
+            **Branch:** main
+            **Commit message:** ${{ steps.commit.outputs.message }}
 
-          ### Available APK Download
+            ### Available APK Download
 
-          This release includes an APK optimized for **arm64-v8a** architecture (modern 64-bit ARM devices).
+            This release includes an APK optimized for **arm64-v8a** architecture (modern 64-bit ARM devices).
 
-          - **app-release.apk** - For modern 64-bit ARM devices (most current Android phones)
+            - **app-release.apk** - For modern 64-bit ARM devices (most current Android phones)
 
-          ### Installation Instructions
+            ### Installation Instructions
 
-          1. Download the APK file
-          2. Enable "Install from Unknown Sources" in your Android device settings
-          3. Open the downloaded APK file to install
+            1. Download the APK file
+            2. Enable "Install from Unknown Sources" in your Android device settings
+            3. Open the downloaded APK file to install
 
-          ### Device Compatibility
+            ### Device Compatibility
 
-          This APK is built for arm64-v8a (64-bit ARM) devices, which includes most modern Android phones released after 2017.
+            This APK is built for arm64-v8a (64-bit ARM) devices, which includes most modern Android phones released after 2017.
 
-          > **Note**: Builds for other architectures (armeabi-v7a for older 32-bit devices, x86_64 for emulators) are not included in automatic releases. They can be added back by modifying the `.github/workflows/auto-release.yml` file as documented in the workflow comments.
+            > **Note**: Builds for other architectures (armeabi-v7a for older 32-bit devices, x86_64 for emulators) are not included in automatic releases. They can be added back by modifying the `.github/workflows/auto-release.yml` file as documented in the workflow comments.
 
-          For more information, see the [README](https://github.com/arqueffe/Scroll-of-Shame/blob/main/README.md).
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            For more information, see the [README](https://github.com/arqueffe/Scroll-of-Shame/blob/main/README.md).
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
