@@ -1,5 +1,9 @@
 name: Auto Release on Main
 
+# This workflow automatically creates releases when code is pushed to main.
+# It bumps the version, builds the APK, and creates a GitHub release.
+# Note: This workflow runs alongside build-android.yml. Both trigger on main pushes.
+
 on:
   push:
     branches:
