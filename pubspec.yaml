@@ -1,7 +1,7 @@
-name: scroll_of_shame
-description: An app to shame you for using time-wasting apps
+name: intend
+description: A context-aware coaching app that helps you use your phone with intention
 publish_to: 'none'
-version: 1.2.0+3
+version: 2.0.0+3
 
 environment:
   sdk: '>=3.0.0 <4.0.0'

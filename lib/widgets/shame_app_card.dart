@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/shame_app.dart';
 
 class ShameAppCard extends StatelessWidget {
-  final ShameApp app;
+  final IntendApp app;
   final VoidCallback onToggle;
   final VoidCallback onDelete;
 
@@ -42,7 +42,7 @@ class ShameAppCard extends StatelessWidget {
           children: [
             const SizedBox(height: 4),
             Text(
-              app.shameMessage,
+              app.intentionPrompt,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
@@ -73,8 +73,8 @@ class ShameAppCard extends StatelessWidget {
                 showDialog(
                   context: context,
                   builder: (context) => AlertDialog(
-                    title: const Text('Delete App'),
-                    content: Text('Remove ${app.appName} from the shame list?'),
+                    title: const Text('Remove App'),
+                    content: Text('Remove ${app.appName} from your intention list?'),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(context),
@@ -85,7 +85,7 @@ class ShameAppCard extends StatelessWidget {
                           Navigator.pop(context);
                           onDelete();
                         },
-                        child: const Text('Delete'),
+                        child: const Text('Remove'),
                       ),
                     ],
                   ),

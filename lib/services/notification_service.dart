@@ -4,9 +4,9 @@ class NotificationService {
   static final FlutterLocalNotificationsPlugin _notifications =
       FlutterLocalNotificationsPlugin();
   
-  static const String channelId = 'shame_notifications';
-  static const String channelName = 'Shame Notifications';
-  static const String channelDescription = 'Notifications to shame you for using time-wasting apps';
+  static const String channelId = 'intend_notifications';
+  static const String channelName = 'Intend Coaching';
+  static const String channelDescription = 'Mindful reminders to use apps with intention';
 
   static Future<void> init() async {
     const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -30,7 +30,7 @@ class NotificationService {
         ?.createNotificationChannel(androidChannel);
   }
 
-  static Future<void> showShameNotification(
+  static Future<void> showIntentionPrompt(
       String appName, String message) async {
     const androidDetails = AndroidNotificationDetails(
       channelId,
@@ -46,7 +46,7 @@ class NotificationService {
 
     await _notifications.show(
       DateTime.now().millisecondsSinceEpoch % 100000,
-      '🔔 Caught you!',
+      '💭 Using $appName?',
       message,
       details,
     );

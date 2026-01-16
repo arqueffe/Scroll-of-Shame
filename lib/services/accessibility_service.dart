@@ -61,28 +61,28 @@ class AccessibilityService {
   }
 
   static Future<void> _handleAppChange(String packageName) async {
-    // Check if in shame-free hours
-    final settings = await StorageService.getShameFreeSettings();
-    if (settings.isInShameFreeHours(DateTime.now())) {
+    // Check if in focus time hours
+    final settings = await StorageService.getFocusTimeSettings();
+    if (settings.isInFocusTime(DateTime.now())) {
       return;
     }
 
-    // Check if app is in shame list
-    final shameApps = await StorageService.getShameApps();
-    final shameApp = shameApps.firstWhere(
+    // Check if app is in intention list
+    final intendApps = await StorageService.getIntendApps();
+    final intendApp = intendApps.firstWhere(
       (app) => app.packageName == packageName && app.isEnabled,
-      orElse: () => ShameApp(
+      orElse: () => IntendApp(
         packageName: '',
         appName: '',
-        shameMessage: '',
+        intentionPrompt: '',
         isEnabled: false,
       ),
     );
 
-    if (shameApp.packageName.isNotEmpty) {
-      await NotificationService.showShameNotification(
-        shameApp.appName,
-        shameApp.shameMessage,
+    if (intendApp.packageName.isNotEmpty) {
+      await NotificationService.showIntentionPrompt(
+        intendApp.appName,
+        intendApp.intentionPrompt,
       );
     }
   }

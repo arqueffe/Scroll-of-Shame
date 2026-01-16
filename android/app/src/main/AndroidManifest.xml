@@ -10,7 +10,7 @@
         tools:ignore="ProtectedPermissions" />
 
     <application
-        android:label="Scroll of Shame"
+        android:label="Intend"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         

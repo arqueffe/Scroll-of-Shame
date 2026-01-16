@@ -8,8 +8,8 @@ class StorageService {
   static Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
     
-    // Initialize with default shame apps if first run
-    final apps = await getShameApps();
+    // Initialize with default apps if first run
+    final apps = await getIntendApps();
     if (apps.isEmpty) {
       await _initializeDefaultApps();
     }
@@ -17,72 +17,73 @@ class StorageService {
 
   static Future<void> _initializeDefaultApps() async {
     final defaultApps = [
-      ShameApp(
+      IntendApp(
         packageName: 'com.reddit.frontpage',
         appName: 'Reddit',
-        shameMessage: '🛑 Really? Reddit again? Your productivity is crying!',
+        intentionPrompt: '💭 Opening Reddit with intention? Set a time limit for yourself.',
       ),
-      ShameApp(
+      IntendApp(
         packageName: 'com.instagram.android',
         appName: 'Instagram',
-        shameMessage: '📸 Stop comparing your life to others! Get back to work!',
+        intentionPrompt: '📸 Before scrolling, what are you looking for?',
       ),
-      ShameApp(
+      IntendApp(
         packageName: 'com.zhiliaoapp.musically',
         appName: 'TikTok',
-        shameMessage: '⏰ Those 15-second videos are stealing your life!',
+        intentionPrompt: '⏰ Ready for TikTok? Consider a 10-minute timer.',
       ),
-      ShameApp(
+      IntendApp(
         packageName: 'com.google.android.youtube',
         appName: 'YouTube',
-        shameMessage: '🎥 "Just one more video" - famous last words!',
+        intentionPrompt: '🎥 What do you want to watch? Being specific helps.',
       ),
-      ShameApp(
+      IntendApp(
         packageName: 'com.twitter.android',
         appName: 'Twitter/X',
-        shameMessage: '🐦 The timeline will still be there later. Promise!',
+        intentionPrompt: '🐦 Checking in on Twitter? Set an intention for this session.',
       ),
-      ShameApp(
+      IntendApp(
         packageName: 'com.facebook.katana',
         appName: 'Facebook',
-        shameMessage: '👎 Facebook stalking won\'t make you successful!',
+        intentionPrompt: '👋 Opening Facebook - what are you hoping to find?',
       ),
-      ShameApp(
+      IntendApp(
         packageName: 'com.snapchat.android',
         appName: 'Snapchat',
-        shameMessage: '👻 Snap out of it! Time to be productive!',
+        intentionPrompt: '👻 Time for Snapchat? Quick check-in or longer session?',
       ),
-      ShameApp(
+      IntendApp(
         packageName: 'com.netflix.mediaclient',
         appName: 'Netflix',
-        shameMessage: '📺 Netflix and chill? More like Netflix and kill your goals!',
+        intentionPrompt: '📺 Netflix time - what are you in the mood for?',
       ),
-      ShameApp(
+      IntendApp(
         packageName: 'com.pinterest',
         appName: 'Pinterest',
-        shameMessage: '📌 Pinning things won\'t accomplish them!',
+        intentionPrompt: '📌 Browsing Pinterest? Try setting a specific search goal.',
       ),
-      ShameApp(
+      IntendApp(
         packageName: 'com.tumblr',
         appName: 'Tumblr',
-        shameMessage: '🌀 Endless scrolling is not a hobby!',
+        intentionPrompt: '🌀 Opening Tumblr - consider what you want to accomplish.',
       ),
     ];
 
     for (final app in defaultApps) {
-      await addShameApp(app);
+      await addIntendApp(app);
     }
   }
 
-  static Future<List<ShameApp>> getShameApps() async {
-    final jsonList = _prefs.getStringList('shame_apps') ?? [];
+  static Future<List<IntendApp>> getIntendApps() async {
+    final jsonList = _prefs.getStringList('intend_apps') ?? 
+                     _prefs.getStringList('shame_apps') ?? [];
     return jsonList
-        .map((json) => ShameApp.fromJson(jsonDecode(json) as Map<String, dynamic>))
+        .map((json) => IntendApp.fromJson(jsonDecode(json) as Map<String, dynamic>))
         .toList();
   }
 
-  static Future<void> addShameApp(ShameApp app) async {
-    final apps = await getShameApps();
+  static Future<void> addIntendApp(IntendApp app) async {
+    final apps = await getIntendApps();
     
     // Check if app already exists
     if (apps.any((a) => a.packageName == app.packageName)) {
@@ -90,41 +91,42 @@ class StorageService {
     }
     
     apps.add(app);
-    await _saveShameApps(apps);
+    await _saveIntendApps(apps);
   }
 
-  static Future<void> updateShameApp(ShameApp app) async {
-    final apps = await getShameApps();
+  static Future<void> updateIntendApp(IntendApp app) async {
+    final apps = await getIntendApps();
     final index = apps.indexWhere((a) => a.packageName == app.packageName);
     
     if (index != -1) {
       apps[index] = app;
-      await _saveShameApps(apps);
+      await _saveIntendApps(apps);
     }
   }
 
-  static Future<void> removeShameApp(String packageName) async {
-    final apps = await getShameApps();
+  static Future<void> removeIntendApp(String packageName) async {
+    final apps = await getIntendApps();
     apps.removeWhere((app) => app.packageName == packageName);
-    await _saveShameApps(apps);
+    await _saveIntendApps(apps);
   }
 
-  static Future<void> _saveShameApps(List<ShameApp> apps) async {
+  static Future<void> _saveIntendApps(List<IntendApp> apps) async {
     final jsonList = apps.map((app) => jsonEncode(app.toJson())).toList();
-    await _prefs.setStringList('shame_apps', jsonList);
+    await _prefs.setStringList('intend_apps', jsonList);
   }
 
-  static Future<ShameFreeSettings> getShameFreeSettings() async {
-    final json = _prefs.getString('shame_free_settings');
+  static Future<FocusTimeSettings> getFocusTimeSettings() async {
+    final json = _prefs.getString('focus_time_settings') ?? 
+                 _prefs.getString('shame_free_settings');
     if (json == null) {
-      return ShameFreeSettings();
+      return FocusTimeSettings();
     }
-    return ShameFreeSettings.fromJson(
+    return FocusTimeSettings.fromJson(
         jsonDecode(json) as Map<String, dynamic>);
   }
 
-  static Future<void> saveShameFreeSettings(ShameFreeSettings settings) async {
+  static Future<void> saveFocusTimeSettings(FocusTimeSettings settings) async {
     await _prefs.setString(
-        'shame_free_settings', jsonEncode(settings.toJson()));
+        'focus_time_settings', jsonEncode(settings.toJson()));
   }
 }
