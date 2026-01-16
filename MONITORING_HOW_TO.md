@@ -1,4 +1,4 @@
-# Scroll-of-Shame
+# Monitoring System
 
 A Flutter app that helps you stay productive by shaming you for using time-wasting apps. Monitor your app usage and get notifications when you open apps like Reddit, Instagram, TikTok, YouTube, and more!
 
